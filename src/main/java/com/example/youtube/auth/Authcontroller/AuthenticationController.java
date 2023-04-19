@@ -4,7 +4,9 @@ import com.example.youtube.auth.AuthService.AuthenticationService;
 import com.example.youtube.auth.DTO.AuthenticationRequest;
 import com.example.youtube.auth.DTO.AuthenticationResponse;
 import com.example.youtube.auth.DTO.RegisterRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -24,7 +26,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
-            @RequestBody RegisterRequest request
+            @RequestBody @Valid RegisterRequest request
     ){
         try{
             return ResponseEntity.ok(authenticationService.register(request));
@@ -41,13 +43,9 @@ public class AuthenticationController {
         }
     }
 
-
-
-
-
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody @Valid AuthenticationRequest request
     ){
         try{
             return ResponseEntity.ok(authenticationService.authenticate(request));

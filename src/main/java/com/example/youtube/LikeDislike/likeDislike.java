@@ -28,8 +28,7 @@ public class likeDislike {
     @JoinColumn(name = "video_likeDislike", nullable = false)
     private videos video_likeDislike;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column()
     private boolean isLike;
 
 }

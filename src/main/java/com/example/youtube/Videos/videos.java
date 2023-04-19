@@ -45,7 +45,6 @@ public class videos {
     @JoinColumn(name = "video_user_id", nullable = false )
     private User video_user_id;
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "video_likeDislike")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "video_likeDislike")
     List<likeDislike> video_likeDislikes = new ArrayList<>();
-
 }
