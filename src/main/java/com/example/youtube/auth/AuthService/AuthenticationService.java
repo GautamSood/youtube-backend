@@ -3,6 +3,7 @@ package com.example.youtube.auth.AuthService;
 import com.example.youtube.SecurityConfig.JwtService;
 import com.example.youtube.User.Roles.Role;
 import com.example.youtube.User.User;
+import com.example.youtube.User.UserRepository;
 import com.example.youtube.auth.DTO.AuthenticationRequest;
 import com.example.youtube.auth.DTO.AuthenticationResponse;
 import com.example.youtube.auth.DTO.RegisterRequest;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
 
-    private final com.example.youtube.User.userRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;

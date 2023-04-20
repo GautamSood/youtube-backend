@@ -1,6 +1,8 @@
 package com.example.youtube.Subscriber;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.example.youtube.User.User;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(
         name = "subscriber"
 )
@@ -25,7 +28,7 @@ public class subscriber {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscriber_id", nullable = false )
-    private User subscriber_id;
+    private User subscriberid;
 
 
 }

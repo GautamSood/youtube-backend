@@ -1,10 +1,14 @@
-package com.example.youtube.LikeDislike;
+package com.example.youtube.Videos.LikeDislike;
 
 import com.example.youtube.User.User;
-import com.example.youtube.Videos.videos;
+import com.example.youtube.Videos.Videos;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,21 +16,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class likeDislike {
+@Builder
+public class LikeDislike {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "null")
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "userid_likeDislike", nullable = false)
-    private User userid_likeDislike;
+    private User useridlikeDislike;
 
-    @NotNull
+    @NotNull(message = "null")
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "video_likeDislike", nullable = false)
-    private videos video_likeDislike;
+    private Videos videolikeDislike;
 
     @Column()
     private boolean isLike;

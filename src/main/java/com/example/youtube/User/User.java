@@ -1,8 +1,10 @@
 package com.example.youtube.User;
-import com.example.youtube.LikeDislike.likeDislike;
+import com.example.youtube.Videos.LikeDislike.LikeDislike;
 import com.example.youtube.Subscriber.subscriber;
 import com.example.youtube.User.Roles.Role;
-import com.example.youtube.Videos.videos;
+import com.example.youtube.Videos.Videos;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,34 +29,39 @@ public class User implements UserDetails{
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "null")
+    @NotEmpty(message = "empty")
+    @NotBlank(message = "blank")
     @Column(name = "user" , nullable = false)
     private String user;
 
-    @NotNull
+    @NotNull(message = "null")
+    @NotEmpty(message = "empty")
+    @NotBlank(message = "blank")
     @Email(message = "write a correct Email")
     @Column(name = "email", nullable = false , unique = true , updatable = false)
-    @NotEmpty
-    @NotBlank
     private String email;
 
-    @NotNull
+    @NotNull(message = "null")
+    @NotEmpty(message = "empty")
+    @NotBlank(message = "blank")
     @Column(name = "user_pass", nullable = false )
-    @NotEmpty
-    @NotBlank
     private String user_pass;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "subscriber_id",orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL ,mappedBy = "subscriberid",orphanRemoval = true)
+    @JsonIgnore
     List<subscriber> subscribers = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "video_user_id" ,  orphanRemoval = true)
-    List<videos>  videos = new ArrayList<>();
+    @JsonManagedReference
+    List<Videos>  videos = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "userid_likeDislike" , orphanRemoval = true)
-    List<likeDislike> likeDislike = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "useridlikeDislike" , orphanRemoval = true)
+    @JsonManagedReference
+    List<LikeDislike> likeDislike = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

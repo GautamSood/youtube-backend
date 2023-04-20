@@ -1,6 +1,6 @@
 package com.example.youtube.SecurityConfig;
 
-import com.example.youtube.User.userRepository;
+import com.example.youtube.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final userRepository repository;
+    private final UserRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService(){
