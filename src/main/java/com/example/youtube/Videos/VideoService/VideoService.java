@@ -13,6 +13,7 @@ import com.google.cloud.storage.StorageOptions;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -42,14 +43,12 @@ public class VideoService {
     //    vid upload service
 //    ***********************************************************************************************************
     private String uploadFile(File file, String fileName) throws IOException {
-
         BlobId blobId = BlobId.of("metube-2df26.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
         Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("C:/Users/soodg/Downloads/metube-2df26-firebase-adminsdk-1fx5p-2d969a9004.json"));
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
         return String.format("https://firebasestorage.googleapis.com/v0/b/metube-2df26.appspot.com/o/%s?alt=media", URLEncoder.encode(fileName, StandardCharsets.UTF_8));
-
     }
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
         File tempFile = new File(fileName);
@@ -75,7 +74,10 @@ public class VideoService {
             var vid = Videos.builder().title(title)
                     .description(des)
                     .video_user_id(user)
-                    .video_url(TEMP_URL).build();
+                    .video_url(TEMP_URL)
+                    .ageRestrict(false)
+                    .Baned(false)
+                    .build();
             List<Videos> lt = user.getVideos();
             lt.add(vid);
             user.setVideos(lt);
@@ -87,17 +89,58 @@ public class VideoService {
 
     }
 
-    @Transactional
-    public String deletevid(long vidId) {
-        if(videosRepository.findById(vidId).isPresent()){
-            videosRepository.deleteById(vidId);
-            return "vid deleted";
-        }
-        return "vid already deleted";
-    }
-
 //    vid upload service
 //    *******************************************************************************************************************
 
 
+    @Transactional
+    public ResponseEntity<String> deletevid(long vidId) throws Exception {
+        if(videosRepository.findById(vidId).isPresent()){
+            var vid = videosRepository.findById(vidId).orElseThrow(() -> new UsernameNotFoundException("not found"));
+            String fileUrl = vid.getVideo_url();
+            String bucketName = "metube-2df26.appspot.com";
+            String fileNameWithQuery = fileUrl.substring(fileUrl.lastIndexOf("/") + 1); // 2dc79b56-70b3-456a-9ffe-cd2abcc242cd.mp4?alt=media
+            String fileName = fileNameWithQuery.substring(0, fileNameWithQuery.lastIndexOf("?")); // 2dc79b56-70b3-456a-9ffe-cd2abcc242cd.mp4
+            BlobId blobId = BlobId.of(bucketName, fileName);
+            Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(new FileInputStream("C:/Users/soodg/Downloads/metube-2df26-firebase-adminsdk-1fx5p-2d969a9004.json"))).build().getService();
+            boolean deleted = storage.delete(blobId);
+            if (deleted) {
+                System.out.println("File deleted successfully");
+                videosRepository.deleteById(vidId);
+                return ResponseEntity.ok("vid deleted");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("problem in deleting the vid");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("vid already deleted");
+    }
+
+    public String agerestrict(long vidId) {
+        var vid = videosRepository.findById(vidId).orElseThrow(() -> new UsernameNotFoundException("vid not found"));
+        vid.setAgeRestrict(true);
+        videosRepository.save(vid);
+        return "done";
+    }
+
+
+    public String banned(long vidId) {
+        var vid = videosRepository.findById(vidId).orElseThrow(() -> new UsernameNotFoundException("vid not found"));
+        vid.setBaned(true);
+        videosRepository.save(vid);
+        return "done";
+    }
+
+    public String removeageristrict(long vidId) {
+        var vid = videosRepository.findById(vidId).orElseThrow(() -> new UsernameNotFoundException("vid not found"));
+        vid.setBaned(false);
+        videosRepository.save(vid);
+        return "done";
+    }
+
+    public String removedBanned(long vidId) {
+        var vid = videosRepository.findById(vidId).orElseThrow(() -> new UsernameNotFoundException("vid not found"));
+        vid.setAgeRestrict(false);
+        videosRepository.save(vid);
+        return "done";
+    }
 }

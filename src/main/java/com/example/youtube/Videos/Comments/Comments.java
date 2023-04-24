@@ -2,6 +2,7 @@ package com.example.youtube.Videos.Comments;
 
 import com.example.youtube.User.User;
 import com.example.youtube.Videos.Videos;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -24,6 +25,7 @@ public class Comments {
     @NotEmpty(message = "empty")
     @NotBlank(message = "blank")
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private User userid;
 
@@ -31,6 +33,7 @@ public class Comments {
     @NotEmpty(message = "empty")
     @NotBlank(message = "blank")
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "video_id", nullable = false)
     private Videos videoid;
 

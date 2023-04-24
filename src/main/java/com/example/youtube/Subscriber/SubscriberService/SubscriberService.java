@@ -47,7 +47,6 @@ public class SubscriberService {
         var user2 = userRepository.findById(subsId).orElseThrow(() -> new UsernameNotFoundException("user2 not found"));
         if(subscriberRepository.findByUseridAndSubscriberid(user1,user2).isPresent()){
             var subs = subscriberRepository.deleteByUseridAndAndSubscriberid(user1,user2);
-
             return "unsubed";
         }
         return "already unsubed";

@@ -1,5 +1,6 @@
 package com.example.youtube.Videos;
 
+import com.example.youtube.Videos.Comments.Comments;
 import com.example.youtube.Videos.LikeDislike.LikeDislike;
 import com.example.youtube.User.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -59,4 +60,8 @@ public class Videos {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "videolikeDislike")
     @JsonManagedReference
     List<LikeDislike> video_likeDislikes = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "videoid")
+    @JsonManagedReference
+    List<Comments> videosComments = new ArrayList<>();
 }

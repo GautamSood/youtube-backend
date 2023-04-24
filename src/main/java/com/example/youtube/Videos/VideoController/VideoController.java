@@ -46,18 +46,42 @@ public class VideoController {
         return videoService.upload(multipartFile,id,title,des);
     }
 
-    @DeleteMapping("/deletevid/{vidId}")
+    @DeleteMapping("/admin/deletevid/{vidId}")
     public ResponseEntity<String> deleteVid(
             @PathVariable(value = "vidId") long vidId
+    ) throws Exception {
+        return videoService.deletevid(vidId);
+    }
+
+    @PutMapping("/admin/ageristrict/{vidId}")
+    public ResponseEntity<String> agerestrict(
+            @PathVariable(value = "vidId") long vidId
     ){
-        return ResponseEntity.ok(videoService.deletevid(vidId));
+        return ResponseEntity.ok(videoService.agerestrict(vidId));
+    }
+    @PutMapping("/admin/removeageristrict/{vidId}")
+    public ResponseEntity<String> removeageristrict(
+            @PathVariable(value = "vidId") long vidId
+    ){
+        return ResponseEntity.ok(videoService.removeageristrict(vidId));
+    }
+    @PutMapping("/admin/Banned/{vidId}")
+    public ResponseEntity<String> banned(
+            @PathVariable(value = "vidId") long vidId
+    ){
+        return ResponseEntity.ok(videoService.banned(vidId));
+    }
+    @PutMapping("/admin/removedBanned/{vidId}")
+    public ResponseEntity<String> removedBanned(
+            @PathVariable(value = "vidId") long vidId
+    ){
+        return ResponseEntity.ok(videoService.removedBanned(vidId));
     }
 
     @GetMapping(value = "/stream/{videoId}")
     public void streamVideo(@PathVariable("videoId") Long videoId, HttpServletResponse response) throws IOException {
 
         try {
-
             var video = videosRepository.findById(videoId);
             String vidUrl = video.get().getVideo_url();
 
@@ -65,12 +89,9 @@ public class VideoController {
             URLConnection connection = url.openConnection();
             InputStream stream = connection.getInputStream();
 
-
             // set the response headers
             response.setContentType("video/mp4");
             response.setHeader("Content-Disposition", "inline; filename=" +video.get().getTitle() +".mp4");
-
-
             OutputStream outputStream = response.getOutputStream();
             byte[] buffer = new byte[256];
             int bytesRead;

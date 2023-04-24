@@ -1,4 +1,5 @@
 package com.example.youtube.User;
+import com.example.youtube.Videos.Comments.Comments;
 import com.example.youtube.Videos.LikeDislike.LikeDislike;
 import com.example.youtube.Subscriber.subscriber;
 import com.example.youtube.User.Roles.Role;
@@ -62,6 +63,10 @@ public class User implements UserDetails{
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "useridlikeDislike" , orphanRemoval = true)
     @JsonManagedReference
     List<LikeDislike> likeDislike = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "userid" , orphanRemoval = true)
+    @JsonManagedReference
+    List<Comments> UsersComments = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
